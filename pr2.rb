@@ -10,11 +10,19 @@ def rpn(expression)
     end
   end
 
-  tokens = expression.scan(/\d+|\+|\-|\*|\//)
+  tokens = expression.scan(/\d+|\+|\-|\*|\/|\(|\)/)
+  print tokens
 
   tokens.each do |token|
     if token =~ /\d+/
       result << token
+    elsif token == '('
+      operator_stack << token
+    elsif token == ')'
+      while operator_stack.any? && operator_stack.last != '('
+        result << operator_stack.pop
+      end
+      operator_stack.pop
     else
       while operator_stack.any? && precedence(operator_stack.last) >= precedence(token)
         result << operator_stack.pop
@@ -30,4 +38,6 @@ end
 puts "Введіть математичний вираз у звичайному вигляді:"
 expression = gets.chomp
 output = rpn(expression)
+puts " "
 puts output
+
